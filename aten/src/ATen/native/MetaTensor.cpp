@@ -29,15 +29,22 @@ Tensor empty_meta_symint(
       size, dtype_opt, layout_opt, device_opt, pin_memory_opt, memory_format_opt);
 }
 
-Tensor empty_strided_meta(
-  IntArrayRef size,
-  IntArrayRef stride,
+Tensor empty_strided_meta_symint(
+  SymIntArrayRef size,
+  SymIntArrayRef stride,
   c10::optional<ScalarType> dtype_opt,
   c10::optional<Layout> layout_opt,
   c10::optional<Device> device_opt,
   c10::optional<bool> pin_memory_opt
 ) {
-  return at::detail::empty_strided_meta(
+  auto opt_size = asIntArrayRefSlowOpt(size);
+  auto opt_stride = asIntArrayRefSlowOpt(stride);
+  if (opt_size.has_value() && opt_stride.has_value()) {
+    TORCH_INTERNAL_ASSERT(opt_size->size() == opt_stride->size());
+    return at::detail::empty_strided_meta(
+        *opt_size, *opt_stride, dtype_opt, layout_opt, device_opt, pin_memory_opt);
+  }
+  return at::detail::empty_strided_symint_meta(
       size, stride, dtype_opt, layout_opt, device_opt, pin_memory_opt);
 }
 
