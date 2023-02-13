@@ -80,7 +80,7 @@ librosa>=0.6.2 ; python_version < "3.11"
 #Pinned versions:
 #test that import:
 
-mypy==0.960
+mypy==0.990
 # Pin MyPy version because new errors are likely to appear with each release
 #Description: linter
 #Pinned versions: 0.960
